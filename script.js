@@ -2,145 +2,148 @@ const title = document.getElementById("piano-title");
 
 title.textContent = "My Virtual Piano";
 
-
 const audioContext = new AudioContext();
+const piano = document.querySelector(".piano");
 
+const pianoWrapper = document.querySelector(".piano-wrapper");
 
-const notes = [
-    "C4", "D4", "E4", "F4", "G4", "A4", "B4",
-    "C5", "D5", "E5", "F5", "G5", "A5", "B5"
+const noteNames = [
+    "C", "C#", "D", "D#", "E", "F",
+    "F#", "G", "G#", "A", "A#", "B"
 ];
 
-const blackNotes = [
-    "C#4", "D#4", "F#4", "G#4", "A#4",
-    "C#5", "D#5", "F#5", "G#5", "A#5"
-];
+const blackNoteNames = ["C#", "D#", "F#", "G#", "A#"];
 
-const blackKeyPositions = {
-    "C#4": 63,
-    "D#4": 125,
-    "F#4": 249,
-    "G#4": 311,
-    "A#4": 373,
+const allNotes = [];
 
-    "C#5": 497,
-    "D#5": 559,
-    "F#5": 683,
-    "G#5": 745,
-    "A#5": 807
-};
+for (let octave = 1; octave <= 7; octave++) {
+    for (const noteName of noteNames) {
+        allNotes.push(noteName + octave);
+    }
+}
 
-const frequencies = {
-    C4: 261.63,
-    D4: 293.66,
-    E4: 329.63,
-    F4: 349.23,
-    G4: 392.00,
-    A4: 440.00,
-    B4: 493.88,
+allNotes.unshift("A0", "A#0", "B0");
+allNotes.push("C8");
 
-    C5: 523.26,
-    D5: 587.32,
-    E5: 659.26,
-    F5: 698.46,
-    G5: 784.00,
-    A5: 880.00,
-    B5: 987.76,
+console.log("Total notes:", allNotes.length);
 
-    "C#4": 277.18,
-    "D#4": 311.13,
-    "F#4": 369.99,
-    "G#4": 415.30,
-    "A#4": 466.16,
+function isBlackKey(note) {
+    const noteName = note.slice(0, -1);
 
-    "C#5": 554.37,
-    "D#5": 622.25,
-    "F#5": 739.99,
-    "G#5": 830.61,
-    "A#5": 932.33
-};
+    return blackNoteNames.includes(noteName);
+}
+
+const whiteNotes = [];
+const blackNotesGenerated = [];
+
+for (const note of allNotes) {
+    if (isBlackKey(note)) {
+        blackNotesGenerated.push(note);
+    } else {
+        whiteNotes.push(note);
+    }
+}
+
+console.log("White keys:", whiteNotes.length);
+console.log("Black keys:", blackNotesGenerated.length);
+
+const frequencies = {};
+const A4_FREQUENCY = 440;
+
+for (let i = 0; i < allNotes.length; i++) {
+    const note = allNotes[i];
+
+    const semitonesFromA4 = i - 48;
+
+    const frequency =
+        A4_FREQUENCY * Math.pow(2, semitonesFromA4 / 12);
+
+    frequencies[note] = frequency;
+}
 
 const harmonics = [
-    { multiplier: 2, volume: 0.15 },
-    { multiplier: 3, volume: 0.08 }
+    { multiplier: 2, volume: 0.08 },
+    { multiplier: 3, volume: 0.03 },
+    { multiplier: 4, volume: 0.01 },
+    { multiplier: 5, volume: 0.005 }
 ];
-
-
-const piano = document.querySelector(".piano");
 
 function playNote(frequency, velocity) {
     const peakVolume = 0.3 * velocity;
-
     const now = audioContext.currentTime;
 
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
 
+    oscillator.type = "sine";
+    oscillator.frequency.value = frequency;
 
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+    gainNode.gain.value = 0;
 
-        oscillator.type = "triangle";
-        oscillator.frequency.value = frequency;
+    gainNode.gain.linearRampToValueAtTime(
+        peakVolume,
+        now + 0.01
+    );
 
-        gainNode.gain.value = 0;
+    gainNode.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + 1.5
+    );
 
-        gainNode.gain.linearRampToValueAtTime(
-            peakVolume, 
-            now + 0.01
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.start();
+    oscillator.stop(now + 1.5);
+
+    for (const harmonic of harmonics) {
+        const harmonicOscillator = audioContext.createOscillator();
+        const harmonicGain = audioContext.createGain();
+
+        harmonicOscillator.type = "sine";
+
+        harmonicOscillator.frequency.value =
+            frequency * harmonic.multiplier;
+
+        harmonicGain.gain.value = harmonic.volume;
+
+        harmonicGain.gain.exponentialRampToValueAtTime(
+            0.001,
+            now + 1.5
         );
 
-        gainNode.gain.exponentialRampToValueAtTime(
-            0.001,
-            now + 1.5  
-);
+        harmonicOscillator.connect(harmonicGain);
+        harmonicGain.connect(audioContext.destination);
 
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+        harmonicOscillator.start();
+        harmonicOscillator.stop(now + 1.5);
+    }
+}
 
-        oscillator.start();
-        oscillator.stop(now + 1.5);
+function activateKey(key) {
+    key.classList.add("active");
 
-        for (const harmonic of harmonics) {
-
-            const harmonicOscillator = audioContext.createOscillator();
-            const harmonicGain = audioContext.createGain();
-
-            harmonicOscillator.type = "sine";
-
-            harmonicOscillator.frequency.value =
-                frequency * harmonic.multiplier;
-
-            harmonicGain.gain.value = harmonic.volume;
-
-            harmonicGain.gain.linearRampToValueAtTime(
-                0,
-                now + 1.5
-            );
-
-            harmonicOscillator.connect(harmonicGain);
-            harmonicGain.connect(audioContext.destination);
-
-            harmonicOscillator.start();
-            harmonicOscillator.stop(now + 1.5);
-        }
-
+    setTimeout(function() {
+        key.classList.remove("active");
+    }, 150);
 }
 
 function handleKeyPress(key) {
     audioContext.resume();
 
-    const frequency = frequencies[key.dataset.note];
+    const note = key.dataset.note;
+    const frequency = frequencies[note];
     const velocity = 0.5;
 
     playNote(frequency, velocity);
 
-    key.classList.add("active");
-
-    setTimeout(function () {
-        key.classList.remove("active");
-    }, 150);
+    activateKey(key);
 }
 
-for (const note of notes) {
+const whiteKeyElements = {};
+const keyElements = {};
+
+for (const note of whiteNotes) {
     const key = document.createElement("div");
 
     key.textContent = note;
@@ -149,13 +152,15 @@ for (const note of notes) {
 
     piano.appendChild(key);
 
+    whiteKeyElements[note] = key;
+    keyElements[note] = key;
 
-    key.addEventListener("click", function () {
+    key.addEventListener("click", function() {
         handleKeyPress(key);
     });
 }
 
-for (const note of blackNotes) {
+for (const note of blackNotesGenerated) {
     const key = document.createElement("div");
 
     key.textContent = note;
@@ -164,11 +169,158 @@ for (const note of blackNotes) {
 
     piano.appendChild(key);
 
-    const position = blackKeyPositions[note];
-    key.style.left = position + "px";
+    keyElements[note] = key;
 
-    key.addEventListener("click", function () {
+    const noteName = note.slice(0, -1);
+    const octave = note.slice(-1);
+
+    const precedingWhiteNote =
+        noteName[0] + octave;
+
+    const whiteKey =
+        whiteKeyElements[precedingWhiteNote];
+
+    const whiteKeyRect =
+        whiteKey.getBoundingClientRect();
+
+    const pianoRect =
+        piano.getBoundingClientRect();
+
+    const gap = 2;
+    const blackKeyWidth = 35;
+
+    const centerOfGap =
+        whiteKeyRect.right +
+        gap / 2 -
+        pianoRect.left;
+
+    const leftPosition =
+        centerOfGap -
+        blackKeyWidth / 2;
+
+    key.style.left = `${leftPosition}px`;
+
+    key.addEventListener("click", function() {
         handleKeyPress(key);
     });
-    
 }
+
+const keyboardMap = {
+    a: "C",
+    w: "C#",
+    s: "D",
+    e: "D#",
+    d: "E",
+    f: "F",
+    t: "F#",
+    g: "G",
+    y: "G#",
+    h: "A",
+    u: "A#",
+    j: "B"
+};
+
+let currentOctave = 4;
+const currentOctaveDisplay =
+    document.getElementById("current-octave");
+
+const octaveDownButton =
+    document.getElementById("octave-down");
+
+const octaveUpButton =
+    document.getElementById("octave-up");
+
+function changeOctave(direction) {
+    const newOctave = currentOctave + direction;
+
+    if (newOctave < 1 || newOctave > 7) {
+        return;
+    }
+
+    currentOctave = newOctave;
+
+    currentOctaveDisplay.textContent = currentOctave;
+
+    scrollToOctave(currentOctave);
+}
+
+function scrollToOctave(octave) {
+    const targetKey = keyElements[`C${octave}`];
+
+    if (!targetKey) {
+        return;
+    }
+
+    targetKey.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest"
+    });
+}
+
+octaveDownButton.addEventListener("click", function() {
+    changeOctave(-1);
+});
+
+octaveUpButton.addEventListener("click", function() {
+    changeOctave(1);
+});
+
+
+document.addEventListener("keydown", function(event) {
+    if (event.repeat) {
+        return;
+    }
+
+    const keyPressed = event.key.toLowerCase();
+
+    if (keyPressed === "z") {
+        changeOctave(-1);
+        return;
+    }
+    
+    if (keyPressed === "x") {
+        changeOctave(1);
+        return;
+    }
+
+    const noteName = keyboardMap[keyPressed];
+
+    if (!noteName) {
+        return;
+    }
+
+    const note = noteName + currentOctave;
+    const key = keyElements[note];
+
+    if (!key) {
+        return;
+    }
+
+    audioContext.resume();
+
+    playNote(frequencies[note], 0.5);
+
+    key.classList.add("active");
+});
+
+document.addEventListener("keyup", function(event) {
+    const keyPressed = event.key.toLowerCase();
+
+    const noteName = keyboardMap[keyPressed];
+
+    if (!noteName) {
+        return;
+    }
+
+    const note = noteName + currentOctave;
+    const key = keyElements[note];
+
+    if (!key) {
+        return;
+    }
+
+    key.classList.remove("active");
+});
+
+scrollToOctave(currentOctave);

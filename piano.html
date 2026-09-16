@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Piano</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main>
+
+        <a class="back-home" href="index.html">◀ Back to Home</a>
+    
+        <h1 id="piano-title"></h1>
+    
+        <section class="piano-controls">
+    
+            <div class="octave-control">
+                <button id="octave-down">Z</button>
+    
+                <span>
+                    Octave <strong id="current-octave">4</strong>
+                </span>
+    
+                <button id="octave-up">X</button>
+            </div>
+    
+            <div class="keyboard-guide">
+                <h2>Computer Keyboard</h2>
+    
+                <div class="keyboard-row">
+                    <span>A</span>
+                    <span>W</span>
+                    <span>S</span>
+                    <span>E</span>
+                    <span>D</span>
+                    <span>F</span>
+                    <span>T</span>
+                    <span>G</span>
+                    <span>Y</span>
+                    <span>H</span>
+                    <span>U</span>
+                    <span>J</span>
+                </div>
+    
+                <div class="note-row">
+                    <span>C</span>
+                    <span>C#</span>
+                    <span>D</span>
+                    <span>D#</span>
+                    <span>E</span>
+                    <span>F</span>
+                    <span>F#</span>
+                    <span>G</span>
+                    <span>G#</span>
+                    <span>A</span>
+                    <span>A#</span>
+                    <span>B</span>
+                </div>
+            </div>
+    
+        </section>
+    
+        <div class="piano-wrapper">
+            <div class="piano"></div>
+        </div>
+    
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
