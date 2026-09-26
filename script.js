@@ -324,3 +324,15 @@ document.addEventListener("keyup", function(event) {
 });
 
 scrollToOctave(currentOctave);
+
+const camera = document.getElementById("camera");
+
+async function startCamera() {
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: true
+    });
+
+    camera.srcObject = stream;
+}
+
+startCamera();
