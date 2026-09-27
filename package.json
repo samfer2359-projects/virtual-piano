@@ -1,0 +1,27 @@
+{
+  "name": "virtual-piano",
+  "version": "1.0.0",
+  "description": "An interactive virtual piano that lets users play using their mouse, keyboard, touch, and eventually hand movements through a webcam.",
+  "main": "script.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samfer2359-projects/virtual-piano.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/samfer2359-projects/virtual-piano/issues"
+  },
+  "homepage": "https://github.com/samfer2359-projects/virtual-piano#readme",
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^1.0.1"
+  },
+  "devDependencies": {
+    "vite": "^8.3.1"
+  }
+}

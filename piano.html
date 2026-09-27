@@ -1,81 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Virtual Piano</title>
-    <link rel="stylesheet" href="style.css">
-    
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
 
 <body>
 
-    <main>
+<main class="piano-page">
 
-        <a class="back-home" href="index.html">◀ Back to Home</a>
-    
-        <h1 id="piano-title"></h1>
+    <a
+        class="back-home"
+        href="index.html"
+    >
+        ← Back to Home
+    </a>
 
-        <section class="camera-section">
-            <h2>Camera</h2>
-        
-            <video id="camera" autoplay playsinline></video>
-        </section>
-    
-        <section class="piano-controls">
-    
-            <div class="octave-control">
-                <button id="octave-down">Z</button>
-    
-                <span>
-                    Octave <strong id="current-octave">4</strong>
-                </span>
-    
-                <button id="octave-up">X</button>
-            </div>
-    
-            <div class="keyboard-guide">
-                <h2>Computer Keyboard</h2>
-    
-                <div class="keyboard-row">
-                    <span>A</span>
-                    <span>W</span>
-                    <span>S</span>
-                    <span>E</span>
-                    <span>D</span>
-                    <span>F</span>
-                    <span>T</span>
-                    <span>G</span>
-                    <span>Y</span>
-                    <span>H</span>
-                    <span>U</span>
-                    <span>J</span>
-                </div>
-    
-                <div class="note-row">
-                    <span>C</span>
-                    <span>C#</span>
-                    <span>D</span>
-                    <span>D#</span>
-                    <span>E</span>
-                    <span>F</span>
-                    <span>F#</span>
-                    <span>G</span>
-                    <span>G#</span>
-                    <span>A</span>
-                    <span>A#</span>
-                    <span>B</span>
-                </div>
-            </div>
-    
-        </section>
-    
-        <div class="piano-wrapper">
-            <div class="piano"></div>
+    <header class="piano-header">
+
+        <div>
+
+            <p class="eyebrow">
+                DIGITAL PIANO
+            </p>
+
+            <h1>
+                Virtual Piano
+            </h1>
+
         </div>
-    
-    </main>
 
-    <script src="script.js"></script>
+    </header>
+
+    <nav class="mode-selector">
+
+        <div class="mode-buttons">
+
+            <button
+                type="button"
+                data-mode="keyboard"
+            >
+                Keyboard
+            </button>
+
+            <button
+                type="button"
+                data-mode="songs"
+            >
+                Songs
+            </button>
+
+            <button
+                type="button"
+                data-mode="camera"
+            >
+                Camera
+            </button>
+
+        </div>
+
+    </nav>
+
+    <section
+        class="mode-panel keyboard-mode"
+        data-mode-panel="keyboard"
+    >
+
+        <div class="octave-controls">
+
+            <button
+                id="octave-down"
+                type="button"
+                aria-label="Lower octave"
+            >
+                −
+            </button>
+
+            <span>
+                Octave
+                <strong id="current-octave">
+                    4
+                </strong>
+            </span>
+
+            <button
+                id="octave-up"
+                type="button"
+                aria-label="Raise octave"
+            >
+                +
+            </button>
+
+        </div>
+
+    </section>
+
+    <section
+        class="mode-panel songs-mode"
+        data-mode-panel="songs"
+        hidden
+    >
+
+        <div class="songs-header">
+
+            <p class="eyebrow">
+                SONGS
+            </p>
+
+            <h2>
+                Choose a song
+            </h2>
+
+            <p>
+                Select a song and watch the piano play it.
+            </p>
+
+        </div>
+
+        <section
+            id="songs-list"
+            class="songs-list"
+        ></section>
+
+        <div class="song-controls">
+
+            <button
+                id="stop-song"
+                type="button"
+            >
+                Stop
+            </button>
+
+        </div>
+
+    </section>
+
+    <section
+        class="piano-area"
+        data-piano-area
+    >
+
+        <div class="piano-wrapper">
+
+            <div class="piano"></div>
+
+        </div>
+
+    </section>
+
+    <section
+        class="mode-panel camera-mode"
+        data-mode-panel="camera"
+        hidden
+    >
+
+        <div class="camera-introduction">
+
+            <p class="eyebrow">
+                EXPERIMENTAL
+            </p>
+
+            <blockquote>
+                Sometimes the music is in the air.
+            </blockquote>
+
+        </div>
+
+        <div class="camera-container">
+
+            <video
+                id="camera"
+                autoplay
+                playsinline
+            ></video>
+
+            <canvas
+                id="hand-canvas"
+            ></canvas>
+
+            <div
+                class="camera-note-indicator"
+                aria-hidden="true"
+            >
+                🎵
+            </div>
+
+        </div>
+
+        <p
+            id="camera-status"
+            class="camera-status"
+        >
+            Camera is starting...
+        </p>
+
+    </section>
+
+    <footer class="piano-footer">
+
+        <a
+            class="secondary-button"
+            href="instructions.html"
+        >
+            How to Play
+        </a>
+
+    </footer>
+
+</main>
+
+<script
+    type="module"
+    src="js/main.js"
+></script>
+
+<script
+    type="module"
+    src="js/songs.js"
+></script>
+
 </body>
+
 </html>
