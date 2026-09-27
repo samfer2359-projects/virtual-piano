@@ -1,7 +1,7 @@
 import {
     FilesetResolver,
     HandLandmarker
-} from "@mediapipe/tasks-vision";
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/+esm";
 
 import {
     getCurrentOctave,
@@ -526,9 +526,9 @@ async function playCameraNote(note) {
 
 async function createHandLandmarker() {
     const vision =
-        await FilesetResolver.forVisionTasks(
-            "/node_modules/@mediapipe/tasks-vision/wasm"
-        );
+    await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm"
+    );
 
     handLandmarker =
         await HandLandmarker.createFromOptions(
