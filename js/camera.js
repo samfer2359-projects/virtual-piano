@@ -118,11 +118,11 @@ function getHandName(result, index) {
         result.handednesses?.[index]?.[0]?.categoryName;
 
     if (detectedName === "Left") {
-        return "Right";
+        return "Left";
     }
 
     if (detectedName === "Right") {
-        return "Left";
+        return "Right";
     }
 
     return null;
@@ -137,7 +137,7 @@ function getNoteForFinger(
         getCurrentOctave();
 
     const blackRegion =
-        y < 0.25;
+        y < 0.40;
 
     if (blackRegion) {
         const noteName =
@@ -265,7 +265,7 @@ function drawInterface() {
     );
 
     const boundary =
-        canvas.height * 0.25;
+        canvas.height * 0.40;
 
     context.beginPath();
 
